@@ -1,0 +1,538 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BoxTrackLabel.API</name>
+    </assembly>
+    <members>
+        <member name="M:BoxTrackLabel.API.Controllers.ConfigurationController.UpdateConfig(BoxTrackLabel.API.Models.ConfigurationValue)">
+             <summary>
+             Método para actualizar un registro de configuración de la aplicación
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+                 
+                 Importante: se envía por parámetros el objeto que representa el registro de configuración a modificar
+            
+                 PUT /updateconfig    
+                 {
+                      "Id": 1,
+                      "Codigo": "confirmarModulo",
+                      "TextoConfiguracion": "Confirmación de módulo en impresión de etiquetas",
+                      "ValorConfiguracion": "False",
+                      "EstaBorrado": false,
+                      "FechaHoraBorrado": null,
+                      "FechaHoraModificacion": null,
+                      "FechaHoraRegistro": null,
+                      "UsuarioRegistro": "Juan",
+                      "UsuarioModificacion": null,
+                      "UsuarioEliminacion": null
+                 }
+             </remarks>
+             <param value="configuration">Registro de valor de configuración del sistema</param>
+             <response code="200">Código de estado 200, que indica que se ha actualizado la configuración exitosamente</response>
+             <response code="400">Si se intenta duplicar un código de configuración o si se ha lanzado un excepción</response> 
+             <response code="401">Acceso no autorizado: el token correcto no fue proporcionado o está vencido</response>
+             <response code="403">Acceso prohibido: el usuario no tiene privilegios para acceder al presente método</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.ConfigurationController.GetByCode(System.String)">
+            <summary>
+            Método para consultar un registro de configuración de la aplicación mediante su código
+            </summary>
+            <remarks>
+            Ejemplo de petición:
+                
+                GET /getbycode/confirmarModulo  
+            </remarks>
+            <param value="code">Código de un registro de configuración del sistema</param>
+            <response code="200">Código de estado 200 junto al registro de configuración consultado</response>
+            <response code="400">si se ha lanzado un excepción</response> 
+            <response code="401">Acceso no autorizado: el token correcto no fue proporcionado o está vencido</response>
+            <response code="403">Acceso prohibido: el usuario no tiene privilegios para acceder al presente método</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.ConfigurationController.UpdateMasterData">
+            <summary>
+            Ejecuta el job que actualiza la base de datos maestros de Sql desde SAP 
+            </summary>
+            <remarks>
+            Ejemplo de petición:
+                
+                GET /updateMasterData  
+            </remarks>
+            <response code="200">El job de actualización se ejecutó exitosamente</response>
+            <response code="400">si se ha lanzado un excepción</response> 
+            <response code="401">Acceso no autorizado: el token correcto no fue proporcionado o está vencido</response>
+            <response code="403">Acceso prohibido: el usuario no tiene privilegios para acceder al presente método</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.CodeController.GetCodes(BoxTrackLabel.API.Models.Order)">
+             <summary>
+             Método para la requisición de códigos datamatrix de una determinada orden
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+            
+                 POST /GetCodes
+                 {
+                    "clientToken": "1a866e5a-38d3-447c-a761-50be5fd86316",
+                    "gtin": 07465603170599,
+                    "omsId": "34e4a261-9842-46d3-96cc-2c22fab4be05"
+                    "orderId": "9cbc151a-9ff1-47ad-98d5-e4edd3dda13e"
+                    "quantity": 52
+                 }
+                 Retorna: Un listado de códigos datamatrix
+             </remarks>
+             <param name="order">La orden de la cual se requieren los códigos</param>
+             <response code="200">Cuando se realiza la requisición exitosamente, se obtiene un listado de códigos con la siguiente estructura:</response>
+             <response code="400">La requisición falló debido algún parámetro erróneo o excepción lanzada</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.CodeController.ConfirmCode(System.String)">
+             <summary>
+             Método para marcar los códigos datamatrix previamente escaneados como confirmados
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+            
+                 POST /GetCodes
+                 {
+                    "code": "07465603170599vopsxSPAAAAdGVz",
+                 }
+                 Retorna: un código de estado 200 acompañado del código confirmado
+             </remarks>
+             <param name="code">El código a confirmar</param>
+             <response code="200">Cuando se realiza la confirmación exitosamente, se obtiene el código de respuesta 200 acompañado del código que fue confirmado:</response>
+             <response code="400">La confirmación falló debido algún parámetro erróneo o excepción lanzada</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.CodeController.CanPrintOrder(System.Int32)">
+             <summary>
+             Método para consultar una orden y verificar si su impresión fue autorizada.
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+            
+                 GET /CanPrintOrder/9cbc151a-9ff1-47ad-98d5-e4edd3dda13e
+                 Retorna: un valor booleano que indica si podemos imprimir los códigos de la orden
+             </remarks>
+             <param name="orderId">Clave de la orden a consultar</param>
+             <response code="200">Se obtiene el código de respuesta 200 acompañado del valor booleano true</response>
+             <response code="400">No existen códigos disponibles o se ha lanzado un excepción</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.DataMatrixBaseController`2.Get">
+             <summary>
+             Método para consultar todos los regitros de una entidad determinada (clic para ver detalles)
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+            
+                 GET /Code    :se obtienen todos los códigos descargados
+                 GET /Order   :se obtienen todos las ordernes descargados
+                 GET /EmailAccount  :se obtienen todas las cuentas de correo registradas
+                 GET /OrderSettings  : se obtienen todos los valores por defecto para las órdenes
+             </remarks>
+             <response code="200">Se obtiene un listado de elementos acompañados del código de estado 200, los elementos tendrán la siguiente estructura:</response>
+             <response code="400">Se ha lanzado un excepción</response>
+             <response code="401">Acceso no autorizado: el token correcto no fue proporcionado o está vencido</response>
+             <response code="403">Acceso prohibido: el usuario no tiene privilegios para acceder al presente método</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.DataMatrixBaseController`2.Get(System.Int32)">
+             <summary>
+             Método para consultar un registro de una entidad determinada mediante su clave (clic para ver detalles)
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+            
+                 GET /Code/{id}    :se obtiene un registro de código mediante su id
+                 GET /Order/{id}   :se obtiene un registro de orden mediante su id
+                 GET /EmailAccount/{id}  :se obtiene correo registrado mediante su id
+                 GET /OrderSettings/{id}  : se obtiene un registro de los valores por defecto de las órdenes
+             </remarks>
+             <response code="200">Se obtiene un registro específico junto al código de estado 200, en elemento tendrá la siguiente estructura:</response>
+             <response code="400">Se ha lanzado un excepción</response>
+             <response code="401">Acceso no autorizado: el token correcto no fue proporcionado o está vencido</response>
+             <response code="403">Acceso prohibido: el usuario no tiene privilegios para acceder al presente método</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.DataMatrixBaseController`2.Put(`0)">
+             <summary>
+             Método para actualizar un registro de una entidad determinada (clic para ver detalles)
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+            
+                 Importante: El parámetro del método es un objeto que almacena la entidad a modificar. 
+            
+                 PUT /Code    :actualiza un registro de códigos datamatrix 
+                 PUT /Order   :actualiza un registro de órdenes datamatrix
+                 PUT /EmailAccount  :actualiza un registro de cuentas de correo
+                 PUT /OrderSettings  : actualiza un registro de los valores por defecto de las órdenes
+             </remarks>
+             <response code="200">Se obtiene el registro actualizado junto al código de estado 200, en elemento tendrá la siguiente estructura:</response>
+             <response code="400">Se ha lanzado un excepción</response> 
+             <response code="401">Acceso no autorizado: el token correcto no fue proporcionado o está vencido</response>
+             <response code="403">Acceso prohibido: el usuario no tiene privilegios para acceder al presente método</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.DataMatrixBaseController`2.Post(`0)">
+             <summary>
+             Método para crear un registro de una entidad determinada (clic para ver detalles)
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+            
+                 Importante: El parámetro del método es un objeto que almacena la entidad a crear. 
+            
+                 POST /Code    :Crea un registro de códigos datamatrix 
+                 POST /Order   :Crea un registro de órdenes datamatrix
+                 POST /EmailAccount  :Crea un registro de cuentas de correo
+                 POST /OrderSettings  : Crea un registro de los valores por defecto de las órdenes
+             </remarks>
+             <response code="200">Se obtiene el registro creado junto al código de estado 200, en elemento tendrá la siguiente estructura:</response>
+             <response code="400">Se ha lanzado un excepción</response> 
+             <response code="401">Acceso no autorizado: el token correcto no fue proporcionado o está vencido</response>
+             <response code="403">Acceso prohibido: el usuario no tiene privilegios para acceder al presente método</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.DataMatrixBaseController`2.Delete(System.Int32)">
+             <summary>
+             Método para eliminar un registro de una entidad determinada mediante su clave (clic para ver detalles)
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+            
+                 DELETE /Code/{id}    :elimina un registro de código mediante su id
+                 DELETE /Order/{id}   :elimina un registro de orden mediante su id
+                 DELETE /EmailAccount/{id}  :elimina correo registrado mediante su id
+                 DELETE /OrderSettings/{id}  : elimina un registro de los valores por defecto de las órdenes
+             </remarks>
+             <response code="200">Se elimina un registro específico junto al código de estado 200, en elemento tendrá la siguiente estructura:</response>
+             <response code="400">Se ha lanzado un excepción</response>
+             <response code="401">Acceso no autorizado: el token correcto no fue proporcionado o está vencido</response>
+             <response code="403">Acceso prohibido: el usuario no tiene privilegios para acceder al presente método</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.AccessController.Login(BoxTrackLabel.API.Models.LoginModel)">
+             <summary>
+             Método para autenticación
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+            
+                 POST /Login
+                 {
+                    "UserName": "Juan",
+                    "Clave": 123
+                 }
+                 Retorna: Token de acceso
+             </remarks>
+             <param name="userInfo">Información de autenticación (usuario y clave)</param>
+             <response code="200">Cuando se realiza la autenticación exitosamente, se obtiene un token de acceso</response>
+             <response code="400">Fallo en la autenticación</response>
+             <response code="401">Acceso no autorizado: el token correcto no fue proporcionado o está vencido</response>
+             <response code="403">Acceso prohibido: el usuario no tiene privilegios para acceder al presente método</response>
+             <response code="500">Se lanzó una excepción no controlada</response>  
+        </member>
+        <member name="M:BoxTrackLabel.API.Controllers.AccessController.RefreshToken(Newtonsoft.Json.Linq.JObject)">
+             <summary>
+             Método para refrezcar un token expirado
+             </summary>
+             <remarks>
+             Ejemplo de petición:
+            
+                 POST /RefreshToken
+                 {
+                    "expiredToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bm..."
+                 }
+                 Retorna: Nuevo token de acceso
+             </remarks>
+             <param name="tokenObject">Token expirado</param>
+             <response code="200">Cuando se genera el nuevo token exitosamente</response>
+             <response code="400">Fallo en la generación del nuevo token o se lanza una excepción</response>
+             <response code="401">Acceso no autorizado: el token correcto no fue proporcionado o está vencido</response>
+             <response code="403">Acceso prohibido: el usuario no tiene privilegios para acceder al presente método</response>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.AccessRepository.Add(System.String,System.String,System.DateTime)">
+            <summary>
+            Agrega un nuevo registro de acceso del usuario
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.AccessRepository.GetAccessByToken(System.String)">
+            <summary>
+            Obtiene el registro de acceso del usuario mediante su token
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.AccessRepository.UpdateToken(BoxTrackLabel.API.Models.Access,System.String,System.DateTime)">
+            <summary>
+            Actualiza el token del usuario cuando se realiza el proceso de tokenrefresh
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ConfigurationRepository.GetByCode(System.String)">
+            <summary>
+            Obtiene una configuración de la aplicación mediante su código
+            </summary>
+        </member>
+        <member name="T:BoxTrackLabel.API.Repositories.EfCoreRepository`2">
+            <summary>
+            Define los métodos básicos de una entidad de forma genérica
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.LabelRepository.Add(BoxTrackLabel.API.Models.Label)">
+            <summary>
+            Inserta un registro de etiquetas impresas
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.LabelRepository.AddRange(System.Collections.Generic.List{BoxTrackLabel.API.Models.Label})">
+            <summary>
+            Inserta m�ltiples etiquetas a la vez
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.LabelRepository.GetLabels(System.Int32,System.Int32,System.Int32,System.DateTime)">
+            <summary>
+            Obtiene las etiquetas no nulas de acuerdo al proceso, módulo, turno y fecha de producción
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.LabelRepository.getLabelText(System.Boolean,System.String,System.Boolean)">
+            <summary>
+            Obtiene el texto preconfigurado de la etiqueta dependiendo del país de destino
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ModuleRepository.GetAllWithProcess">
+            <summary>
+            Obtiene el listado de modulos con su objeto de proceso
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductionRepository.Add(BoxTrackLabel.API.Models.Production)">
+            <summary>
+            Inserta un registro nuevo de producci�n en la base de datos BoxTrackLabel 
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductionRepository.CloseProduction(BoxTrackLabel.API.Models.Production)">
+            <summary>
+            Cierra una producci�n de un determinado turno, as� como las producciones de productos finalizados en el mismo turno.
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductionRepository.GetProduction(System.Int32,System.Int32,System.Int32,System.DateTime,System.Boolean)">
+            <summary>
+            Obtiene la producción del turno, fecha de producción y módulo de empaque especificado
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductionRepository.GetProductionByChangeOver(System.Int32,System.Int32,System.Int32,System.DateTime,System.Boolean)">
+            <summary>
+            Obtiene la producción especificada validando si el producto está finalizado o no 
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductionRepository.GetProductionById(System.Int32)">
+            <summary>
+            Obtiene la producción mediante su id
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductionRepository.GetLastProductionByProduct(System.Int32,System.Int32,System.Int32,System.DateTime,System.String)">
+            <summary>
+            Obtiene el último registro de impresión  por producto y turno
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductionRepository.GetProductionsByProduct(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.DateTime,System.String)">
+            <summary>
+            Obtiene los registros de impresión  por producto y turno
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductionRepository.CanScanProduct(BoxTrackLabel.API.Models.BoxTrack.ProductRegistrationRequest)">
+            <summary>
+            Verifica si el producto está programado y puede utilizarse para generar etiquetas
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductionRepository.GetScheduleProduct(BoxTrackLabel.API.Models.Production)">
+            <summary>
+            Busca el registro de programación del producto para los parámetros dados 
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductionRepository.ChangeOverProduction(BoxTrackLabel.API.Models.Production,BoxTrackLabel.API.Models.Schedule)">
+            <summary>
+            Detecta si ha ocurrido un cambio de producto y finaliza el registro de producción anterior y genera uno nuevo para el producto actual
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductosRepository.GetAll">
+            <summary>
+            Obtiene el listado 
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.GetSchedulesByDate(System.DateTime,System.String,System.String,System.String)">
+            <summary>
+            Obtiene un listado de programaciones de producto, de acuerdo al m�dulo de empaque, la fecha de producci�n y el estatus.
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.filterSchedulesByModule(System.Collections.Generic.List{BoxTrackLabel.API.Models.Schedule},System.String,System.String)">
+            <summary>
+            Devuelve una lista de programaciones filtradas, de acuerdo al proceso y m�dulo de empaque.
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.CreateSchedule(BoxTrackLabel.API.Models.Schedule)">
+            <summary>
+            Inserta una programaci�n de productos en la base de datos de BoxTrackLabel
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.UpdateSchedule(BoxTrackLabel.API.Models.Schedule)">
+            <summary>
+            Actualiza una programaci�n de productos en la base de datos de BoxTrackLabel
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.InsertScheduleList(System.Collections.Generic.List{BoxTrackLabel.API.Models.Schedule})">
+            <summary>
+            Inserta un listado de programaciones de productos en la base de datos de BoxTrackLabel
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.ScheduleExists(System.DateTime,System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Determina si ya existe una programaci�n con otro producto en el mod�lo de empaque para el turno y la fecha de producci�n dada.
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.SameProductScheduleExists(System.DateTime,System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Determina si ya existe una programaci�n con el mismo producto en el mod�lo de empaque para el turno y la fecha de producci�n dada.
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.ScheduleExistsOnShift(System.DateTime,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Determina si ya existe una programaci�n en el m�dulo de cualquier producto, tomando en cuenta como siempre, el turno y la fecha de producci�n. 
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.TryChangeSchedule(BoxTrackLabel.API.Models.Schedule)">
+            <summary>
+            Trata de realizar un cambio de programaci�n, finalizando la anterior y insertanto una nueva, retorna de verdadero si la operaci�n es completada con �xito.
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.CanEditSchedule(BoxTrackLabel.API.Models.Schedule)">
+            <summary>
+            Determina si la programaci�n se puede editar verificando si ya se imprimieron etiquetas, si la programaci�n activa contiene etiquetas no se deben permitir modificaciones.
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ShiftRepository.Get(System.String)">
+            <summary>
+            Obtiene un turno desde la BD mediante su id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ShiftRepository.GetCurrentShift(System.TimeSpan)">
+            <summary>
+            Obtiene el turno actual tomando como parámetro la hora especificada
+            </summary>
+            <param name="currentTime">Hora especificada</param>
+            <returns>Turno Actual</returns>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ShiftRepository.GetShifts">
+            <summary>
+            Obtiene todos los turnos organizados por su id
+            </summary>
+            <returns>Listado de turnos</returns>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ShiftRepository.GetLastShift">
+            <summary>
+            Obtiene el último turno, el orden lo establece su id
+            </summary>
+        </member>
+        <member name="T:BoxTrackLabel.API.Repositories.EfDataMatrixRepository`2">
+            <summary>
+            Define los métodos básicos de una entidad de forma genérica
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.CustomerRepository.GetCustomers">
+            <summary>
+            Obtiene los primeros 500 clientes
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.CustomerRepository.GetCustomersByTerm(System.String)">
+            <summary>
+            Obtiene todos los clientes que inician con el termino proporcionado
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductsRepository.GetAll">
+            <summary>
+            Obtiene el listado de todos los productos terminados
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductsRepository.Get(System.String)">
+            <summary>
+            Obtiene un producto terminado mediante su c�digo
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductsRepository.GetByName(System.String)">
+            <summary>
+            Obtiene el listado de todos los productos terminados que contengan el texto del par�metro name dentro de su descripci�n o que su c�digo sea igual a dicho par�metro.
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.IRolPermissionRepository.FindUserPermissionsAsync(System.Int32)">
+            <summary>
+            Devuelve los permisos asociados a un determinado Rol
+            </summary>
+            <param name="rolId">Id del rol</param>
+            <returns>Listado de permisos</returns>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.IUserRepository.FindUserByNameAndPasswordAsync(System.String,System.String)">
+            <summary>
+            Recupera un usuario desde la base de datos mediante su nombre y clave
+            </summary>
+            <param name="userName">Nombre de usuario</param>
+            <param name="clave">Clave de acceso</param>
+            <returns>Usuario</returns>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.IUserRepository.FindUserByNameAsync(System.String)">
+            <summary>
+            Recupera un usuario mediante su nombre
+            </summary>
+            <param name="userName">Nombre de usuario</param>
+            <returns>Usuario</returns>
+        </member>
+        <member name="T:BoxTrackLabel.API.Services.AuthService">
+            <summary>
+            Esta clase maneja la autenticación mediante tokens y la actualización de tokens vencidos.
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Services.AuthService.LoginAsync(System.String,System.String)">
+            <summary>
+            Autentica un usuario mediante su nombre y clave
+            </summary>
+            <param name="username"></param>
+            <param name="clave"></param>
+            <returns>Token de acceso</returns>
+        </member>
+        <member name="M:BoxTrackLabel.API.Services.AuthService.BuildToken(BoxTrackLabel.API.Models.User)">
+            <summary>
+            Devuelve un token de acceso para el usuario, incluye en el su rol y los permisos
+            </summary>
+            <param name="user"></param>
+            <returns>Token de accesso</returns>
+        </member>
+        <member name="M:BoxTrackLabel.API.Services.AuthService.RefreshToken(System.String)">
+            <summary>
+            Genera un nuevo token de acceso a partir del token expirado, utiliza este último para verificar que es una petición segura
+            </summary>
+            <param name="expiredToken"></param>
+            <returns>Nuevo token de acceso</returns>
+        </member>
+        <member name="M:BoxTrackLabel.API.Services.AuthService.GetPrincipalFromExpiredToken(System.String)">
+            <summary>
+            Valida que el token de acceso vencido es legitimo y retorna sus parámetros principales
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Startup.SeedBoxtrackDataBase(BoxTrackLabel.API.Models.BoxTrackDbContext)">
+            <summary>
+            Verifica si ciertas tablas de configuraciones están vacias para precargarlas con datos.
+            </summary>
+            <param name="context">Contexto de datos EF en el cual se insertará la data de ser necesario</param>
+        </member>
+        <member name="T:BoxTrackLabel.API.Utils.PermissionAuthorizationHandler">
+            <summary>
+            Esta clase contiene el método que determina si el usuario que intenta acceder a un determinado recursos contiene los permisos para hacerlo
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Utils.PermissionAuthorizationHandler.HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext,BoxTrackLabel.API.Utils.PermissionRequirement)">
+            <summary>
+            Este método authoriza el acceso al recurso si dentro de los permisos del usuario se encuentra el permiso necesario.
+            </summary>
+        </member>
+        <member name="T:BoxTrackLabel.API.Utils.PermissionRequirement">
+            <summary>
+            Esta clase almacena el permiso a ser evaluado por el Authorization Handler
+            </summary>
+        </member>
+        <member name="T:PermissionPolicyProvider">
+            <summary>
+            Esta clase se encarga de configurar todas las pol�ticas de permisos de manera din�mica, no ahorra tener que configurar una pol�tica por cada permiso en el startup.cs
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,151 @@
+<div *ngIf="!isTabOpen">
+  <div class="wrapper">
+    <nav id="sidebar" >
+      <div class="sidebar-header">
+        <h4>Box Track Label</h4><span class="h5 ml-2">v{{currentApplicationVersion}}</span>
+      </div>
+      <ul class="list-unstyled components" *ngIf="isLoggedIn()">
+        <li *ngIf="accountService.canViewOption('Programacion')">
+          <a href="#scheduleSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" name="scheduleMenu" (click)="showUniqueMenu('scheduleMenu')">Programación</a>
+          <ul class="collapse list-unstyled" id="scheduleSubmenu">
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["schedule"]'>Programar módulos</a>
+            </li>
+          </ul>
+        </li>
+
+        <li *ngIf="accountService.canViewOption('Etiquetado')" >
+          <a href="#labelSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" name="labelMenu" (click)="showUniqueMenu('labelMenu')">Etiquetado</a>
+          <ul class="collapse list-unstyled" id="labelSubmenu">
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["device"]'>Impresión</a>
+            </li>
+            <li>
+              <a [routerLink]='["reprint"]'>Reimpresión</a>
+            </li>
+            <!-- <li>
+              <a [routerLink]='["qrcancel-label"]'>Anulación por QR Code</a>
+            </li> -->
+          </ul>
+        </li>
+
+        <li  *ngIf="accountService.canViewOption('DataMatrix_operador')">  
+          <a href="#dataMatrixSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" name="dataMatrixMenu" (click)="showUniqueMenu('dataMatrixMenu')">Códigos DataMatrix</a>
+          <ul class="collapse list-unstyled" id="dataMatrixSubmenu">
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["datamatrix"]'>{{accountService.canViewOption('DataMatrix_supervisor') ? 'Administración de órdenes' : 'Impresión de códigos'}}</a>
+            </li>
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["datamatrix/code-validation"]'>Confirmación de códigos</a>
+            </li>
+            <li *ngIf="accountService.canViewOption('DataMatrix_supervisor')" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["datamatrix/orders-config"]'>Configuración de órdenes</a>
+            </li>
+            <li *ngIf="accountService.canViewOption('DataMatrix_supervisor')" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["datamatrix/email-config"]'>Configuración de correos</a>
+            </li>
+          </ul>
+        </li>
+
+        <li *ngIf="accountService.canViewOption('ConfigurarEquipo')">
+          <a href="#configSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" name="configuracionMenu" (click)="showUniqueMenu('configuracionMenu')">Configuración</a>
+          <ul class="collapse list-unstyled" id="configSubmenu">
+            <li>
+              <a [routerLink]="" (click)='masterDataSync()'>Actualizar Datos Maestros</a>
+            </li>
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["/config-app"]'>Aplicación</a>
+            </li>
+            <li>
+              <a [routerLink]='["/printer-configuration"]'>Impresoras</a>
+            </li>
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["/shift"]'>Turnos</a>
+            </li>
+            <!--<li *ngIf="canViewTiOption()">
+      <a href="#">Usuarios</a>
+    </li>-->
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["/module"]'>Módulos</a>
+            </li>
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["/process"]'>Procesos</a>
+            </li>
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              <a [routerLink]='["/storage"]'>Almacenamientos</a>
+            </li>
+            <li>
+              <a [routerLink]="" (click)='descargarServicioImpresion()'>Descargar servicio de impresión local</a>
+            </li>
+            <li>
+              <a [routerLink]='' (click)='descargarManual("Manual Técnico Box Track Label.pdf")'>Manual Técnico</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a [routerLink]='' (click)='descargarManual("Manual De Usuario Box Track Label.pdf")'>Manual de usuario</a>
+        </li>
+        <li *ngIf="isLoggedIn()" >
+          <a [routerLink]="" (click)='logout()'>
+            <fa-icon [icon]="faPowerOff" class="mr-2"></fa-icon>Cerrar Sesión
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div id="content">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
+        <div class="container-fluid">
+          <button type="button" id="sidebarCollapse" class="navbar-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <ul class="nav navbar-nav mr-auto" *ngIf="isLoggedIn() && accountService.canViewOption('Etiquetado')">
+            <!-- asegurarse que este valor solo este si el turno esta abierto y que este actualizado -->
+            <li>
+              <span class="font-weight-bolder ml-3"> {{globalService.getLocalShift()}} </span> <span class="font-weight-bolder ml-1"> {{globalService.getProductionDate()}} </span>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav mx-auto" *ngIf="isMasterDataSync">
+            <li>
+              Actualizando Maestros<fa-icon [icon]="faSpinner" [pulse]="true" size="1x" class="ml-2"></fa-icon>
+            </li>
+          </ul>
+          <!-- <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-align-justify"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="nav navbar-nav ml-auto">
+        <li [routerLinkActive]='["link-active"]'>
+          <a [routerLink]='["/personas"]' class="nav-link" href="#">Personas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Page</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Page</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Page</a>
+        </li>
+      </ul>
+    </div> -->
+          <ul class="nav navbar-nav ml-auto">
+            <li [routerLinkActive]='["link-active"]'>
+              <span class="border-right border-dark font-weight-bolder" *ngIf="isLoggedIn()">{{accountService.getLoggedInUser()}} </span> <span class="ml-1 font-weight-bolder">{{getServer()}}</span>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container">
+        <app-reminder *ngIf="isLoggedIn()"></app-reminder>
+        <!-- <app-change-shift *ngIf="isLoggedIn()"></app-change-shift>  -->
+        <router-outlet></router-outlet>
+      </div>
+
+    </div>
+  </div>
+</div>
