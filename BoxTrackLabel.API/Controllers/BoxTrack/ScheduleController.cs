@@ -100,9 +100,10 @@ namespace BoxTrackLabel.API.Controllers
             catch (System.Exception ex)
             {
                 return ManageException(ex);
-            }
-            
+            }            
         }
+
+
         [HttpPut]
         [Authorize(Permissions.Menus.Programacion)]
         public async Task<ActionResult<Schedule>> UpdateSchedule(Schedule schedule)

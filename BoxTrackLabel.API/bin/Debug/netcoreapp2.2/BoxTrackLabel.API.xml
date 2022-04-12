@@ -349,6 +349,31 @@
             Obtiene el listado 
             </summary>
         </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductosRepository.CreateProducto(BoxTrackLabel.API.Models.Productos)">
+            <summary>
+            Inserta un productos en la base de datos
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.ProductosRepository.UpdateProducto(BoxTrackLabel.API.Models.Productos)">
+            <summary>
+            Actualiza un producto en la base de datos
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.Productos_ProvRepository.GetAll">
+            <summary>
+            Obtiene el listado 
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.Productos_ProvRepository.CreateProducto(BoxTrackLabel.API.Models.Productos_Prov)">
+            <summary>
+            Inserta un productos en la base de datos
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.Productos_ProvRepository.UpdateProducto(BoxTrackLabel.API.Models.Productos_Prov)">
+            <summary>
+            Actualiza un producto en la base de datos
+            </summary>
+        </member>
         <member name="M:BoxTrackLabel.API.Repositories.ScheduleRepository.GetSchedulesByDate(System.DateTime,System.String,System.String,System.String)">
             <summary>
             Obtiene un listado de programaciones de producto, de acuerdo al m�dulo de empaque, la fecha de producci�n y el estatus.
@@ -422,6 +447,21 @@
         <member name="M:BoxTrackLabel.API.Repositories.ShiftRepository.GetLastShift">
             <summary>
             Obtiene el último turno, el orden lo establece su id
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.SuplidoresRepository.GetAll">
+            <summary>
+            Obtiene el listado 
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.SuplidoresRepository.CreateSuplidor(BoxTrackLabel.API.Models.Suplidores)">
+            <summary>
+            Inserta un suplidor o proveedor en la tabla Suplidores de la base de datos
+            </summary>
+        </member>
+        <member name="M:BoxTrackLabel.API.Repositories.SuplidoresRepository.UpdateSuplidor(BoxTrackLabel.API.Models.Suplidores)">
+            <summary>
+            Actualiza un producto en la base de datos
             </summary>
         </member>
         <member name="T:BoxTrackLabel.API.Repositories.EfDataMatrixRepository`2">

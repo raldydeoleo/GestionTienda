@@ -93,6 +93,9 @@ namespace BoxTrackLabel.API
                 services.AddScoped<IAuthService, AuthService>();
                 services.AddScoped<IUserRepository, UserRepository>();
                 services.AddScoped<ProcessRepository>();
+                services.AddScoped<ProductosRepository>();
+                services.AddScoped<SuplidoresRepository>();
+                services.AddScoped<Productos_ProvRepository>();
                 services.AddScoped<ModuleRepository>();
                 services.AddScoped<ProductionRepository>();
                 services.AddScoped<LabelRepository>();

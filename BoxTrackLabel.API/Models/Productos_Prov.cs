@@ -8,6 +8,7 @@ namespace BoxTrackLabel.API.Models
     [Table("Productos_Prov")]
     public class Productos_Prov
     {
+        [Key]
         public int Id { get; set; }
         [Required(ErrorMessage = "Name is required")]
         [StringLength(100, ErrorMessage = "Nombre no puede tener mas de 100 caracteres")]
@@ -22,8 +23,8 @@ namespace BoxTrackLabel.API.Models
         [Required(ErrorMessage = "Fecha de entrada es requerida")]
         public DateTime Fecha_entrada { get; set; }
 
-    //    [ForeignKey(nameof(Suplidores))]
-      //  public int SuplidorId { get; set; }
+       // [ForeignKey(nameof(Suplidores))]
+       // public int SuplidorId { get; set; }
        // public Suplidores Suplidores { get; set; }
     }
 }

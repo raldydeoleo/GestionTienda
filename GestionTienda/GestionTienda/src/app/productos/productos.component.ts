@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { SortEvent, SortDirective } from '../directives/sort.directive';
 import { IProcess } from '../process/process';
 import { ModalService } from '../modals/modal/modal.service';
+import { RouterLink } from '@angular/router';
 
 @UntilDestroy()
 @Component({
@@ -16,7 +17,7 @@ import { ModalService } from '../modals/modal/modal.service';
       templateUrl: './productos.component.html',
       styleUrls: ['./productos.component.css']
     })
-export class ProductosComponent implements OnInit , DoCheck {
+export class ProductosComponent implements OnInit {
   public productos: IProductos[];
   public processes: IProcess[];
   productos$: Observable<IProductos[]>;
@@ -27,33 +28,24 @@ export class ProductosComponent implements OnInit , DoCheck {
     this.productosService.fillProductos();
     this.productosService._search$.next();
     this.productos$ = productosService.productos$;
-    this.total$ = productosService.total$;
-    this.productosService.getProcesses().toPromise().then(processes => {
-      this.processes = processes;
-    });
+    this.total$ = productosService.total$;   
   }
 
-  ngOnInit() {
-    this.productos$.subscribe(productos => this.productos = productos);
+  ngOnInit() {    
     this.loadData();
+    this.productos$.subscribe(productos => this.productos = productos);
     //this.accountService.showSubMenu("configuracionMenu"); //DESPLEGAR MENU CONFIGURACION AL INICIAR
   }
   
   loadData(): void {
-    this.productosService.getProductos()
+      this.productosService.getProductos()
       .toPromise().then(productos => this.productos = productos);
   }
-
-  ngDoCheck() {
-    if (this.productosService._processId$.value != 0) {
-      let processSelect = (<HTMLSelectElement>document.getElementById('idProceso'));
-      processSelect.value = this.productosService._processId$.getValue().toString();
-    }
-  }
-  /* delete(module: IModule) {
+ 
+  reponer(producto: IProductos) {
     let data = {
-      title: 'Confirmación de eliminación',
-      message: `¿Está seguro que desea eliminar el módulo ${module.textoModulo} del proceso ${(module.process as IProcess).descripcion.toLowerCase()}?`,
+      title: 'Confirmación de reposición',
+      message: `¿Está seguro que desea realizar reposición  lel producto ${producto.nombre} ?`,
       btnText: 'Sí',
       btnCancelText: 'No',
       hasCancelOption: 'Si',
@@ -62,32 +54,29 @@ export class ProductosComponent implements OnInit , DoCheck {
     this.modalService.open(data).pipe(
       untilDestroyed(this)
     ).subscribe(result => {
-      if (result == "ok click") {
-        module.usuarioEliminacion = this.accountService.getLoggedInUser();
-        this.moduleService.deleteModule(module).pipe(untilDestroyed(this)).subscribe(null, error => console.error(error), () => { this.moduleService.fillModules(); this.toast.success("Módulo Eliminado!"); });
+      if (result == "ok click") {        
+        this.productosService.deleteProducto(producto).pipe(untilDestroyed(this)).subscribe(null, error => console.error(error), () => { this.productosService.fillProductos(); this.toast.success("Producto Eliminado!"); });
       }
     });
     
+
   }
-  onSort({ column, direction }: SortEvent) {
-    // resetting other headers
-    this.headers.forEach(header => {
-      if (header.sortable !== column) {
-        header.direction = '';
+   delete(producto: IProductos) {
+    let data = {
+      title: 'Confirmación de eliminación',
+      message: `¿Está seguro que desea eliminar el producto ${producto.nombre} ?`,
+      btnText: 'Sí',
+      btnCancelText: 'No',
+      hasCancelOption: 'Si',
+      okBtnClass: 'btn-danger'
+    }
+    this.modalService.open(data).pipe(
+      untilDestroyed(this)
+    ).subscribe(result => {
+      if (result == "ok click") {        
+        this.productosService.deleteProducto(producto).pipe(untilDestroyed(this)).subscribe(null, error => console.error(error), () => { this.productosService.fillProductos(); this.toast.success("Producto Eliminado!"); });
       }
     });
-
-    this.moduleService.sortColumn = column;
-    this.moduleService.sortDirection = direction;
-  }
-  processChange() {
-    let processSelect = (<HTMLSelectElement>document.getElementById('idProceso'));
-    let processId: string = "";
-    processId = processSelect.value;
-    if (!processId) {
-      processId = "0";
-    }
-    this.moduleService._processId$.next(parseInt(processId));
-    this.moduleService._search$.next();
-  }*/
+    
+  } 
 }

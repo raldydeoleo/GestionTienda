@@ -86,7 +86,8 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl(this.returnUrl);
     }
     else if (Object.values(payLoad).indexOf('Permiso.301') > -1) {
-      this.router.navigate(["schedule"]);
+      //this.router.navigate(["schedule"]);
+      this.router.navigate(["verlistado"]);
     }
     else if (Object.values(payLoad).indexOf('Permiso.300') > -1) {
       this.router.navigate(["device"]);

@@ -1,5 +1,5 @@
 
-<h3>Programación</h3>
+<h3>Reposición</h3>
 <div class="container border" *ngIf="displayForm">
     <app-schedule-form [selectedModule] = "selectedModule"></app-schedule-form>
 </div>
@@ -15,26 +15,26 @@
 </div>
 <form>
     <div class="form-group row col-md-12 col-12 justify-content-md-center">
-      <label for="searchTerm" class="col-auto col-form-label font-weight-bold"> Fecha Producción:</label>
+      <label for="searchTerm" class="col-auto col-form-label font-weight-bold"> Fecha de Recepción:</label>
       <input style="width: 195px;" class="form-control col-auto mb-md-2" type="date" name="searchTerm" id="searchTerm" [ngModel]="scheduleService.searchTerm | date:'yyyy-MM-dd'" (ngModelChange)="scheduleService.searchTerm = $event" ngbTooltip="Filtrar por fecha de producción"/>
-      <div class="col-auto">
-          <select class="custom-select" name="idProceso" id="idProceso" style="width: 250px;" (change)="processChange()" ngbTooltip="Filtrar por proceso">
-            <option value="" selected>Todos los procesos...</option>
+      <div class="col-auto"> 
+          <select class="custom-select" name="idProceso" id="idProceso" style="width: 250px;" (change)="processChange()" ngbTooltip="Filtrar por codigo de producto">
+            <option value="" selected>Código de producto...</option>
             <option *ngFor="let process of processes" value={{process.id}}>
               {{process.descripcion}}
             </option>
           </select>
       </div>
       <div class="col-auto">
-          <select class="custom-select" name="idModulo" id="idModulo" style="width: 250px;" (change)="filterByModule()" ngbTooltip="Filtrar por módulo">
-            <option value="" selected>Todos los módulos...</option>
+          <select class="custom-select" name="idModulo" id="idModulo" style="width: 250px;" (change)="filterByModule()" ngbTooltip="Filtrar por cantidad">
+            <option value="" selected>Cantidad deseada...</option>
             <option *ngFor="let module of optionModules" value={{module.id}}>
               {{module.descripcion}}
             </option>
           </select>
       </div>
     </div>
-    <div class="from-group row justify-content-center">
+   <!-- <div class="from-group row justify-content-center">
       <div class="col-auto">
         <div class="form-check mb-2">
           <input class="form-check-input" type="radio" name="radioCheck" id="activosCheck" value="activos" (click)="filter('activos')" ngbTooltip="Mostrar programaciones activas">
@@ -65,7 +65,7 @@
           <li> <span class="table-secondary"></span>Finalizada</li>
         </ul>
       </div>
-    </div>
+    </div>-->
     
     <p *ngIf="!(schedules && schedules.length)" class="text-center">No existen registros para mostrar</p>
     <table class="table text-center" id="scheduleTable" *ngIf="schedules && schedules.length">

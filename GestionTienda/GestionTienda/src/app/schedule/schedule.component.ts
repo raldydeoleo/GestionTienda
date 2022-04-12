@@ -35,13 +35,13 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.total$ = this.scheduleService.total$;
   }
 
-  ngOnInit() {
-    /* this.loadData(); */
+  ngOnInit() {    
     this.scheduleService.displayScheduleForm.pipe(
       untilDestroyed(this)
     ).subscribe(v=>{
       this.displayForm = v;
     });
+    
     this.scheduleService.addNewSchedule.pipe(
       untilDestroyed(this)
     ).subscribe(v => {
@@ -49,20 +49,23 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       this.scheduleService._estatus$.next("todos");
       this.scheduleService._search$.next();
     });
+
     this.scheduleService.schedules$.pipe(
       untilDestroyed(this)
     ).subscribe(schedules => this.schedules = schedules);
-    this.scheduleService.getProcesses().toPromise().then(processes => {
+   /* this.scheduleService.getProcesses().toPromise().then(processes => {
       this.processes = processes;
       this.scheduleService.getModules().toPromise().then(modules => {
         this.modules = modules;
         this.checkForProcess();
       });
-    });
+    });*/
     localStorage.removeItem("processFiltered");
     localStorage.removeItem("moduleFiltered");
     this.accountService.showSubMenu("scheduleMenu");
   }
+
+
   checkForProcess() {
     let processSelect = (<HTMLSelectElement>document.getElementById('idProceso'));
     let allowedAreasPermissions = this.accountService.getAllowedAreas();
@@ -163,7 +166,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.optionModules = this.modules.filter(function (module) {
       return module.idProceso == idProceso
     });
-  }
+  } 
   ngOnDestroy() {
     this.scheduleService._processId$.next("");
     this.scheduleService._moduleId$.next("");

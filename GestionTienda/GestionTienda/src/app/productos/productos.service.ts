@@ -13,16 +13,15 @@ import { SortDirection } from '../schedule/sort-schedule.directive';
 export class ProductosService {
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
-    //this.fillModules();
+    
     this._search$.pipe(
-        switchMap(() => this._search())
-      ).subscribe(result => {
-        this._productos$.next(result.productos);
-        //this._total$.next(result.total);
+          switchMap(() => this._search())
+        ).subscribe(result => {
+          this._productos$.next(result.productos);        
       });
-     //this._search$.next();
+     
   }
-  private apiUrl = this.baseUrl + "api/getallproductos";
+  private apiUrl = this.baseUrl + "api/productos";
   private _productos$ = new BehaviorSubject<IProductos[]>([]);
   private PRODUCTOS = [];
   public _search$ = new Subject<void>();
@@ -32,38 +31,31 @@ export class ProductosService {
     page: 1,
     pageSize: 6,
     searchTerm: '',
-    sortColumn: 'idProceso',
+    sortColumn: 'id',
     sortDirection: 'asc'
   };
   fillProductos() {
     this.getProductos().toPromise().then(productos => { this.PRODUCTOS = productos; this._productos$.next(productos); this._search$.next(); });
   }
-  /*getModule(id: number): Observable<IProductos> {
-    return this.http.get<IProductos>(this.apiUrl +"/"+ id);
+
+  getProducto(id: number): Observable<IProductos> {
+    return this.http.get<IProductos>(this.apiUrl + "/getproducto/"+ id);
   }
-  createModule(module: IProductos): Observable<IProductos> {
-    return this.http.post<IProductos>(this.apiUrl, module);
+
+  updateProducto(producto: IProductos): Observable<IProductos> {
+    return this.http.put<IProductos>(this.apiUrl, producto);
   }
-  updateModule(module: IProductos): Observable<IProductos> {
-    return this.http.put<IProductos>(this.apiUrl, module);
-  }
-  deleteModule(module: IProductos): Observable<IProductos> {
-    return this.http.put<IProductos>(this.apiUrl + "/delete", module);
-  }
-  getModuleByProcess(idProceso:string): Observable<IProductos[]>{
-      return this.http.get<IProductos[]>(this.apiUrl+"/getmodulebyprocess/"+idProceso);
-  }*/
- 
-  getProcesses(): Observable<IProcess[]> {
-    return this.http.get<IProcess[]>(this.apiUrl + "/getprocesses")
-      .pipe(map(data => data));
-  }
-  getNextModuleCode(processId: number): Observable<any> {
-    return this.http.get<any>(this.apiUrl + "/getNextModuleCode/" + processId);
+
+  createProducto(producto: IProductos): Observable<IProductos> {
+    return this.http.post<IProductos>(this.apiUrl, producto);
+  }  
+
+  deleteProducto(producto: IProductos): Observable<IProductos> {
+    return this.http.put<IProductos>(this.apiUrl + "/delete", producto);
   }
 
   getProductos(): Observable<IProductos[]> {
-    return this.http.get<IProductos[]>(this.apiUrl +"/productos");
+    return this.http.get<IProductos[]>(this.apiUrl +"/getall");
   }
 
   get productos$() { return this._productos$.asObservable(); }
@@ -85,14 +77,7 @@ export class ProductosService {
 
   private _search(): Observable<SearchResult> {
     const { sortColumn, sortDirection, pageSize, page, searchTerm } = this._state;
-
-    let productos = sort(this.PRODUCTOS, sortColumn, sortDirection);
-    if (this._processId$.getValue() == 0) {
-      productos = productos.filter(module => matches(module, searchTerm));
-    } else {
-      productos = productos.filter(module => module.idProceso == this._processId$.getValue());
-      productos = productos.filter(module => matches(module, searchTerm));
-    }
+    let productos = sort(this.PRODUCTOS, sortColumn, sortDirection);  
     const total = productos.length;
     productos = productos.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize);
     return of({ productos, total });
@@ -115,20 +100,13 @@ interface State {
 
 const compare = (v1: string, v2: string) => v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
 
-function sort(modules: IProductos[], column: SortColumn, direction: string): IProductos[] {
+function sort(productos: IProductos[], column: SortColumn, direction: string): IProductos[] {
   if (direction === '' || column === '') {
-    return modules;
+    return productos;
   } else {
-    return [...modules].sort((a, b) => {
+    return [...productos].sort((a, b) => {
       const res = compare(`${a[column]}`, `${b[column]}`);
       return direction === 'asc' ? res : -res;
     });
   }
 }
-
-function matches(module: IProductos, term: string) {
-  return module.descripcion.toLowerCase().includes(term.toLowerCase()) || module.textoModulo.includes(term) || module.codigo.toLowerCase().includes(term.toLowerCase());
-}
-
-
-

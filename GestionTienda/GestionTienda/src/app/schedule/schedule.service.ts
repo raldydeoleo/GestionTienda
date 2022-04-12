@@ -44,6 +44,7 @@ function matches(schedule: ISchedule, term: Date) {
 export class ScheduleService {
 
   private apiUrl = this.baseUrl + "api/Schedule/";
+  //private apiUrl = this.baseUrl + "api/productos";
   public displayScheduleForm = new BehaviorSubject(false);
   public addNewSchedule = new BehaviorSubject<ISchedule>(null);
   public _search$ = new Subject<void>();
@@ -114,6 +115,7 @@ export class ScheduleService {
   }
   getProducts(): Observable<any> {
     return this.http.get<any>(this.apiUrl + "getproducts").pipe(map(data => data));
+    //return this.http.get<any>(this.apiUrl + "/getall").pipe(map(data => data));
   }
   
 

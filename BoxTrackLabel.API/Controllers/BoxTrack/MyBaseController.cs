@@ -37,6 +37,8 @@ namespace BoxTrackLabel.API.Controllers
                 return ManageException(ex);
             }
         }
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<TEntity>> Get(int id)
         {
@@ -55,6 +57,8 @@ namespace BoxTrackLabel.API.Controllers
             }
             
         } 
+
+
         [HttpPut]
         public async Task<IActionResult> Put(TEntity entity)
         {

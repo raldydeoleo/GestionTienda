@@ -7,9 +7,8 @@ namespace BoxTrackLabel.API.Models
 {
     [Table("Productos")]
     public class Productos
-    {
-        
-        
+    {        
+        [Key]
         public int Id { get; set; }
         [Required(ErrorMessage = "Name is required")]
         [StringLength(100, ErrorMessage = "Nombre no puede tener mas de 100 caracteres")]
